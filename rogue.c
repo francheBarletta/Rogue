@@ -31,21 +31,21 @@ int main()
     raw();
     keypad(stdscr, true);
 
-    int row, col;
-    getmaxyx(stdscr, row, col);
+    int col, row;
+    getmaxyx(stdscr, col, row);
 
     Player player;
-    player.x = 1;
-    player.y = 1;
+    player.y = col / 2;
+    player.x = row / 2;
 
     struct Room map;
-    map.width = 20;
     map.height = 10;
+    map.width = 20;
 
     while (true) {
         // TODO: make drawing more efficient
         clear();
-        draw_room(0, 0, map);
+        draw_room(row / 2, col / 2, map);
         draw_player(&player);
 
         int ch = getch();
