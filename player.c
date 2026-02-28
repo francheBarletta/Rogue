@@ -19,4 +19,5 @@ void move_left(Player* player){
 
 void draw_player(Player* player){
     mvaddch(player->y, player->x, '@');
+    move(player->y, player->x);
 }

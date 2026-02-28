@@ -9,11 +9,17 @@ struct Room
 
 void draw_room(int x, int y, struct Room r)
 {
-    for (int i = y; i < r.height; i++)
-    {
-        for (int j = x; j < r.width; j++)
-        {
-            mvaddch(i, j, '.');
+    int endy = y + r.height;
+    int endx = x + r.width;
+    for (int j = x; j < endx; j++) {
+        for (int i = y; i < endy; i++) {
+            if (i == y || i == endy - 1) {
+                mvaddch(i, j, '-');
+            } else if (j == x || j == endx - 1) {
+                mvaddch(i, j, '|');
+            } else {
+                mvaddch(i, j, '.');
+            }
         }
     }
 }
@@ -21,34 +27,36 @@ void draw_room(int x, int y, struct Room r)
 int main()
 {
     initscr();
+    noecho();
+    raw();
+    keypad(stdscr, true);
+
     int row, col;
     getmaxyx(stdscr, row, col);
-    struct Room map;
+
     Player player;
-    player.x = col - 11;
-    player.y = row - 11;
-    map.width = col - 10;
-    map.height = row - 10;
+    player.x = 1;
+    player.y = 1;
 
-    int ch;
-    while (1){
-        draw_room(10, 10, map);
+    struct Room map;
+    map.width = 20;
+    map.height = 10;
+
+    while (true) {
+        // TODO: make drawing more efficient
+        clear();
+        draw_room(0, 0, map);
         draw_player(&player);
-        refresh();
-        ch = getch();
 
-        if(ch == 'q'){
-            break;
-        }
+        int ch = getch();
 
-        if(ch == 'w'){
-            move_up(&player);
-        } else if(ch == 's') {
-            move_down(&player);
-        } else if(ch == 'a') {
-            move_left(&player);
-        } else if(ch == 'd'){
-            move_right(&player);
+        if (ch == 'q') break;
+
+        switch (ch) {
+            case KEY_UP:    move_up(&player);    break;
+            case KEY_LEFT:  move_left(&player);  break;
+            case KEY_DOWN:  move_down(&player);  break;
+            case KEY_RIGHT: move_right(&player); break;
         }
     }
     endwin();
